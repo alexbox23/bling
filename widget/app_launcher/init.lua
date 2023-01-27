@@ -331,6 +331,11 @@ local function search(self, text)
     end
 end
 
+-- Get the last row in the grid. Rows start at index 1 so avoid returning 0.
+local function get_last_row(self)
+    return ((#self._private.grid.children - 1) % self.apps_per_row) + 1
+end
+
 local function page_backward(self, direction)
     if self._private.current_page > 1 then
         self._private.current_page = self._private.current_page - 1
@@ -339,7 +344,7 @@ local function page_backward(self, direction)
     elseif self.wrap_app_scrolling then
         local rows, columns = self._private.grid:get_dimension()
         unselect_app(self)
-        select_app(self, math.min(rows, #self._private.grid.children % self.apps_per_row), columns)
+        select_app(self, math.min(rows, get_last_row(self)), columns)
         return
     else
         return
@@ -370,10 +375,10 @@ local function page_backward(self, direction)
         end
     elseif self.wrap_page_scrolling then
         if direction == "up" then
-            select_app(self, math.min(rows, #self._private.grid.children % self.apps_per_row), columns)
+            select_app(self, math.min(rows, get_last_row(self)), columns)
         else
             -- Keep the same row from last page
-            select_app(self, math.min(pos.row, #self._private.grid.children % self.apps_per_row), columns)
+            select_app(self, math.min(pos.row, get_last_row(self)), columns)
         end
     end
 end
@@ -414,7 +419,7 @@ local function page_forward(self, direction)
         if direction == "down" then
             select_app(self, 1, 1)
         else
-            local last_col_max_row = math.min(pos.row, #self._private.grid.children % self.apps_per_row)
+            local last_col_max_row = math.min(pos.row, get_last_row(self))
             if last_col_max_row ~= 0 then
                 select_app(self, last_col_max_row, 1)
             else
