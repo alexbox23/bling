@@ -18,6 +18,16 @@ local root = root
 local capi = { screen = screen, mouse = mouse }
 local path = ...
 
+
+local naughty = require("naughty")
+local function show_warning(message)
+    naughty.notify {
+        preset = naughty.config.presets.critical,
+        title = "debug",
+        text = message
+    }
+end
+
 local app_launcher  = { mt = {} }
 
 local terminal_commands_lookup =
@@ -211,7 +221,9 @@ local function create_app_widget(self, entry)
                 end)
             end
         else
-            awful.spawn(entry.executable)
+            -- For a regular application, use the command with no arguments.
+            local command, _ = entry.commandline:gsub(" (%%.)", "")
+            awful.spawn(command)
         end
 
         if self.hide_on_launch then
