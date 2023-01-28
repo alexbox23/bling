@@ -128,6 +128,12 @@ local function unselect_app(self)
     end
 end
 
+-- Escape ampersands for rendering with markup.
+local function sanitize_name(name)
+    local clean_name, _ = name:gsub("&", "&amp;")
+    return clean_name
+end
+
 local function create_app_widget(self, entry)
     local icon = self.app_show_icon == true and
     {
@@ -143,7 +149,8 @@ local function create_app_widget(self, entry)
         widget = wibox.widget.textbox,
         id = "name",
         font = self.app_name_font,
-        markup = string.format("<span foreground='%s'>%s</span>", self.app_name_normal_color, entry.name)
+        markup = string.format("<span foreground='%s'>%s</span>", self.app_name_normal_color,
+            sanitize_name(entry.name))
     } or nil
 
     local generic_name = entry.generic_name ~= nil and self.app_show_generic_name == true and
@@ -151,7 +158,8 @@ local function create_app_widget(self, entry)
         widget = wibox.widget.textbox,
         id = "generic_name",
         font = self.app_name_font,
-        markup = entry.generic_name ~= "" and "<span weight='300'> <i>(" .. entry.generic_name .. ")</i></span>" or ""
+        markup = entry.generic_name ~= "" and "<span weight='300'> <i>(" .. 
+            sanitize_name(entry.generic_name) .. ")</i></span>" or ""
     } or nil
 
     local app = wibox.widget
