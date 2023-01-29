@@ -704,14 +704,12 @@ function app_launcher:show()
     end
 
     self:emit_signal("bling::app_launcher::visibility", true)
+    self.screen = screen
 end
 
 --- Hides the app launcher
 function app_launcher:hide()
     local screen = self.screen
-    if self.show_on_focused_screen then
-        screen = awful.screen.focused()
-    end
 
     if screen.app_launcher == nil or screen.app_launcher.visible == false then
         return
@@ -754,6 +752,7 @@ function app_launcher:hide()
     end
 
     self:emit_signal("bling::app_launcher::visibility", false)
+    self.screen = screen
 end
 
 --- Toggles the app launcher
