@@ -302,7 +302,8 @@ local function search(self, text)
 
             -- Check if there's a match by the app name or app command
             if string.find(entry.name:lower(), text:lower(), 1, true) ~= nil or
-                self.search_commands and string.find(entry.commandline, text:lower(), 1, true) ~= nil
+                self.search_commands and entry.commandline ~= nil and
+                    string.find(entry.commandline, text:lower(), 1, true) ~= nil
             then
                 table.insert(self._private.matched_entries, {
                     name = entry.name,
