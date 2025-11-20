@@ -615,7 +615,9 @@ local function generate_apps(self)
     local icon_theme = require(tostring(path):match(".*bling") .. ".helpers.icon_theme")(self.icon_theme, self.icon_size)
 
     for _, app in ipairs(apps) do
-        --if app.should_show(app) then
+        -- Apps may be hidden by their .desktop config.
+        -- Check /usr/share/applications/ or ~/.local/share/applications/
+        if app:should_show() then
             local name = app_info.get_name(app)
             local commandline = app_info.get_commandline(app)
             local executable = app_info.get_executable(app)
@@ -649,7 +651,7 @@ local function generate_apps(self)
                     })
                 end
             end
-        --end
+        end
     end
 end
 
